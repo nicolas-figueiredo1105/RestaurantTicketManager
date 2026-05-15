@@ -1,5 +1,11 @@
 package com.example.restaurantticketmanager;
 
-public class Ticket {
+import java.util.ArrayList;
 
+public class Ticket {
+    ArrayList<MenuItem> [] items;
+
+    public Ticket(){
+
+    }
 }

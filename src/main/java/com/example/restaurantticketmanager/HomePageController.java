@@ -3,7 +3,7 @@ package com.example.restaurantticketmanager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class HomePageController {
     @FXML
     private Label welcomeText;
 
