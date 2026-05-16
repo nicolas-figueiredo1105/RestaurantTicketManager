@@ -17,4 +17,12 @@ public class QueueNode {
     public Ticket getTicket(){
         return ticket;
     }
+
+    //Setters
+    public void setNext(QueueNode newNode){
+        next = newNode;
+    }
+
+    //Methods
+
 }
