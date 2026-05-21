@@ -16,6 +16,6 @@ public class Ticket {
     //Methods
     @Override
     public String toString(){
-        return
+        return "";
     }
 }

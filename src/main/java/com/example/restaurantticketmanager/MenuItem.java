@@ -29,6 +29,10 @@ public class MenuItem {
         return isAppetizer;
     }
 
+    public String getCategory(){
+        return category;
+    }
+
     //Setters-----------------------------------------------------------------------------------
     public void addDescription(String newDescription){
         description = newDescription;
