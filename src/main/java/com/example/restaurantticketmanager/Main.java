@@ -1,6 +1,6 @@
 package com.example.restaurantticketmanager;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -36,14 +36,16 @@ public class Main {
 
         Scanner input = new Scanner(System.in);
 
-        Menu menu = new Menu();
+        ArrayList <Menu> menus = new ArrayList<>();
+
 
         int choice;
 
         do {
+            //STARTING MESSAGE=================================================================
             System.out.println("==== Restaurant Ticket Manager ====");
-            System.out.println("1) Create a Menu");
-            System.out.println("2) Create a Menu Item");
+            System.out.println("1) Menu");
+            System.out.println("2) Menu Item");
             System.out.println("3) Make an Order");
             System.out.println("0) Exit");
             System.out.print("Choice: ");
@@ -51,52 +53,114 @@ public class Main {
             choice = validateIntInput(input);
 
             switch(choice){
+                //MENU=========================================================================
                 case 1:
                     input.nextLine();
 
                     int menuChoice;
-                    HashSet<String> categories = menu.getCategories();
+                    int menuOptionsChoice;
 
-                    System.out.println("--- Create a Menu ---");
-                    System.out.println("1) Create a Category");
-                    System.out.println("2) View Categories");
-                    System.out.println("3) Create New Side");
-                    System.out.println("4) View Sides");
-                    System.out.println("0) Exit");
-                    System.out.print("Choice: ");
 
-                    menuChoice = validateIntInput(input);
+                    if(menus.isEmpty()){
+                        String menuName;
+                        System.out.println("--- Create a Menu ---");
+                        System.out.println("No menus yet.");
+                        System.out.print("Enter menu's name: ");
+                        menuName = input.nextLine();
+                        Menu newMenu = new Menu(menuName);
 
-                    switch (menuChoice){
-                        case 1:
-                            input.nextLine();
+                        menus.add(newMenu);
+                        System.out.println("Menu successfully added.");
+                    } else {
+                        System.out.println("--- Menu ---");
+                        int count = 1;
+                        for(Menu m : menus){
+                            System.out.println(count + ")" + m.getName());
+                        }
 
-                            String category;
+                        int index;
+                        System.out.print("Select a menu (1- " + count + "): ");
+                        index = validateIntInput(input);
 
-                            System.out.println("-- Create a Category --");
-                            System.out.print("Category's name:");
-                            category = input.nextLine();
+                        while(index > menus.size()){
+                            System.out.println("Error. Selected number must be listed on the options.");
+                            input.nextInt();
+                            System.out.println("Select a menu (1- " + count + "): ");
+                            index = input.nextInt();
+                        }
 
-                            menu.createCategory(category);
-                            pressContinue(input);
-                            break;
-                        case 2:
-                            input.nextLine();
 
-                            int count = 1;
-                            System.out.println("-- View Categories --");
-                            if(menu.getCategories().isEmpty()){
-                                System.out.println("No categories added yet.");
-                            } else {
-                                for(String c : categories) {
-                                    System.out.println(count + ") " + c);
+
+                        System.out.println("1) Create a New Menu");
+                        System.out.println("2) Create a Category");
+                        System.out.println("3) View Categories");
+                        System.out.println("4) Create New Side");
+                        System.out.println("5) View Sides");
+                        System.out.println("0) Exit");
+                        System.out.print("Choice: ");
+
+                        menuOptionsChoice = validateIntInput(input);
+
+                        index--;
+                        Menu selectedMenu = menus.get(index);
+                        ArrayList<String> categories = selectedMenu.getCategories();
+
+                        switch (menuOptionsChoice){
+                            case 1:
+                                input.nextLine();
+
+                                String menuName;
+                                System.out.println("-- Create a New Menu --");
+                                System.out.print("Enter menu's name: ");
+
+                                menuName = input.nextLine();
+                                Menu newMenu = new Menu(menuName);
+                                menus.add(newMenu);
+
+                                System.out.println("Menu successfully added.");
+                                break;
+                            case 2:
+                                input.nextLine();
+
+                                String category;
+
+                                System.out.println("-- Create a Category --");
+                                System.out.print("Category's name:");
+                                category = input.nextLine();
+                                selectedMenu.createCategory(category);
+
+                                pressContinue(input);
+                                break;
+                            case 3: //VIEW CATEGORY================================================
+                                input.nextLine();
+
+                                int i = 1;
+                                System.out.println("-- View Categories --");
+                                if(selectedMenu.getCategories().isEmpty()){
+                                    System.out.println("No categories added yet.");
+                                } else {
+                                    for(String c : categories) {
+                                        System.out.println(i + ") " + c);
+                                    }
                                 }
-                            }
-                            pressContinue(input);
-                            break;
+                                pressContinue(input);
+                                break;
+                            case 4: //CREATE NEW SIDE=================================================
+                                String side;
+
+                                System.out.println("-- Create New Side --");
+                                System.out.print("Insert a new side: ");
+                                side = input.nextLine();
+
+                                selectedMenu.createSide(side);
+                                break;
+                        }
                     }
+
+
                     break;
 
+                //MENU ITEM=======================================================================
                 case 2:
                     int menuItemChoice;
 

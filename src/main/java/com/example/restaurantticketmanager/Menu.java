@@ -1,20 +1,24 @@
 package com.example.restaurantticketmanager;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-    private HashSet<String> categories;
-    private HashSet <String> sides;
+    private String name;
+    private ArrayList<String> categories;
+    private ArrayList <String> sides;
 
-    public Menu(){
-        sides = new HashSet<>();
-        categories = new HashSet<>();
+    public Menu(String name){
+        this.name = name;
+        sides = new ArrayList<>();
+        categories = new ArrayList<>();
     }
 
     //Getters
-    public HashSet<String> getCategories(){ return categories; }
+    public ArrayList<String> getCategories(){ return categories; }
+
+    public String getName() { return name; }
 
     //Methods
     public void createCategory(String category){
@@ -22,6 +26,14 @@ public class Menu {
             System.out.println("Duplicated categories are not allowed");
         } else {
             System.out.println("Category added");
+        }
+    }
+
+    public void createSide(String side){
+        if(!categories.add(side)){
+            System.out.println("Duplicated sides are not allowed.");
+        } else {
+            System.out.println("Side added!");
         }
     }
 
