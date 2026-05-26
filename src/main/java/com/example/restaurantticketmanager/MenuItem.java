@@ -5,23 +5,23 @@ public class MenuItem {
     private boolean isAppetizer;
     private String category;
     private String description;
-    private String side;
+    private String [] possibleSides;
 
     //Constructors------------------------------------------------------------------------------
-    public MenuItem(String itemName, boolean isAppetizer, String category, String description, String side){
+    public MenuItem(String itemName, boolean isAppetizer, String description, String [] possibleSides){
         this.itemName = itemName;
         this.isAppetizer = isAppetizer;
-        this.category = category;
+        this.category = "";
         this.description = description;
-        this.side = side;
+        this.possibleSides = possibleSides;
     }
 
-    public MenuItem(String itemName, boolean isAppetizer, String category, String side){
+    public MenuItem(String itemName, boolean isAppetizer, String [] possibleSides){
         this.itemName = itemName;
         this.isAppetizer = isAppetizer;
-        this.category = category;
+        this.category = "";
         this.description = "";
-        this.side = side;
+        this.possibleSides = possibleSides;
     }
 
     //Getters----------------------------------------------------------------------------------
@@ -37,6 +37,8 @@ public class MenuItem {
     public void addDescription(String newDescription){
         description = newDescription;
     }
+
+    public void setCategory(String newCategory){ category = newCategory; }
 
 }
 
