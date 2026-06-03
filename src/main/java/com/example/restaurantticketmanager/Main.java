@@ -32,6 +32,22 @@ public class Main {
         scanner.nextLine();
     }
 
+    public static void createList(ArrayList<String> data){
+        int count = 1;
+        for(String d : data){
+            System.out.println(count + ") " + d);
+            count++;
+        }
+    }
+
+    public static void createMenuList(ArrayList<Menu> menus){
+        int count = 1;
+        for(Menu m : menus){
+            System.out.println(count + ") " + m.getName());
+            count++;
+        }
+    }
+
     public static void main(String [] args){
 
         Scanner input = new Scanner(System.in);
@@ -73,19 +89,17 @@ public class Main {
                         System.out.println("Menu successfully added.");
                     } else {
                         System.out.println("--- Menu ---");
-                        int count = 1;
-                        for(Menu m : menus){
-                            System.out.println(count + ")" + m.getName());
-                        }
+                        createMenuList(menus);
 
                         int index;
-                        System.out.print("Select a menu (1- " + count + "): ");
+                        System.out.print("Select a menu (1- " + menus.size() + "): ");
+
                         index = validateIntInput(input);
 
                         while(index > menus.size()){
                             System.out.println("Error. Selected number must be listed on the options.");
                             input.nextInt();
-                            System.out.println("Select a menu (1- " + count + "): ");
+                            System.out.println("Select a menu (1- " + menus.size() + "): ");
                             index = input.nextInt();
                         }
 
@@ -134,14 +148,11 @@ public class Main {
                             case 3: //VIEW CATEGORY================================================
                                 input.nextLine();
 
-                                int i = 1;
                                 System.out.println("-- View Categories --");
                                 if(selectedMenu.getCategories().isEmpty()){
                                     System.out.println("No categories added yet.");
                                 } else {
-                                    for(String c : categories) {
-                                        System.out.println(i + ") " + c);
-                                    }
+                                    createList(categories);
                                 }
                                 pressContinue(input);
                                 break;
@@ -153,6 +164,13 @@ public class Main {
                                 side = input.nextLine();
 
                                 selectedMenu.createSide(side);
+                                break;
+                            case 5: //VIEW SIDES=====================================================
+                                if(selectedMenu.getSides().isEmpty()){
+                                    System.out.println("No sides added yet.");
+                                } else {
+                                    createList(selectedMenu.getSides());
+                                }
                                 break;
                         }
                     }
@@ -213,6 +231,7 @@ public class Main {
                                 }
                             }
 
+                            if(selectedMenu)
 
                     }
             }

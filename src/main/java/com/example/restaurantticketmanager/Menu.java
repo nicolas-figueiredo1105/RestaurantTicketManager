@@ -18,6 +18,8 @@ public class Menu {
     //Getters
     public ArrayList<String> getCategories(){ return categories; }
 
+    public ArrayList<String> getSides(){ return sides; }
+
     public String getName() { return name; }
 
     //Methods
