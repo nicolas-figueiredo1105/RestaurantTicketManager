@@ -6,6 +6,23 @@ import java.util.Scanner;
 
 public class Main {
 
+    public static Menu selectMenu(ArrayList<Menu> menus, Scanner scanner){
+        if(menus.isEmpty()){
+            System.out.println("No menu created yet.");
+            pressContinue(scanner);
+
+            return null;
+        } else {
+            int choice;
+            System.out.println("-- Select a Menu --");
+            createMenuList(menus);
+            System.out.print("Choice: ");
+            choice = scanner.nextInt();
+
+            return menus.get(choice - 1);
+        }
+    }
+
     public static int validateIntInput(Scanner scanner){
         int input;
 
@@ -25,6 +42,21 @@ public class Main {
         input = scanner.nextLine();
 
         return input.trim().isEmpty();
+    }
+
+    public static boolean checkQuestionInput(Scanner input){
+
+        while(true){
+            String answer = input.nextLine().trim().toLowerCase();
+            switch(answer){
+                case "y":
+                    return true;
+                case "n":
+                    return false;
+                default:
+                    System.out.println("Invalid input. You should enter 'Y' or 'N'.");
+            }
+        }
     }
 
     public static void pressContinue(Scanner scanner){
@@ -99,7 +131,11 @@ public class Main {
                         while(index > menus.size()){
                             System.out.println("Error. Selected number must be listed on the options.");
                             input.nextInt();
-                            System.out.println("Select a menu (1- " + menus.size() + "): ");
+                            if(menus.size() == 1){
+                                System.out.println("Select a menu: ");
+                            } else {
+                                System.out.println("Select a menu (1- " + menus.size() + "): ");
+                            }
                             index = input.nextInt();
                         }
 
@@ -180,6 +216,8 @@ public class Main {
 
                 //MENU ITEM=======================================================================
                 case 2:
+
+
                     int menuItemChoice;
 
                     System.out.println("--- Create a Menu Item ---");
@@ -195,43 +233,27 @@ public class Main {
                             input.nextLine();
                             String itemName;
                             boolean isAppetizer = false; String description; String side;
-                            String confirmation;
+                            String confirmation = "";
 
                             System.out.println("-- Create an Item --");
 
                             System.out.print("Item's name: ");
                             itemName = input.nextLine();
 
-                            System.out.print("Is an appetizer? (Y/N)");
-                            confirmation = input.nextLine();
-                            while(!confirmation.equalsIgnoreCase("Y") || !confirmation.equalsIgnoreCase("N")){
-                                if(confirmation.equalsIgnoreCase("Y")){
-                                    isAppetizer = true;
-                                } else if(confirmation.equalsIgnoreCase("N")){
-                                    isAppetizer = false;
-                                } else {
-                                    System.out.println("Invalid input. You should answer with 'Y' or 'N'.");
-                                    input.nextLine();
-                                    confirmation = input.nextLine();
-                                }
-                            }
+                            System.out.print("Is an appetizer? (Y/N): ");
+                            isAppetizer = checkQuestionInput(input);
 
                             System.out.println("Would you like to add a description of the item? (Y/N): ");
-                            confirmation = input.nextLine();
-                            while(!confirmation.equalsIgnoreCase("Y") || !confirmation.equalsIgnoreCase("N")){
-                                if(confirmation.equalsIgnoreCase("Y")){
-                                    System.out.println("Enter the description: ");
-                                    description = input.nextLine();
-                                } else if(confirmation.equalsIgnoreCase("N")){
-                                    description = "";
-                                } else {
-                                    System.out.println("Invalid input. You should answer with 'Y' or 'N'.");
-                                    input.nextLine();
-                                    confirmation = input.nextLine();
-                                }
+                            boolean addDescription = checkQuestionInput(input);
+
+                            if(addDescription){
+                                System.out.println("Enter a description: ");
+                                description = input.nextLine();
                             }
 
-                            if(selectedMenu)
+                            System.out.println("Select possible sides: ");
+
+
 
                     }
             }
