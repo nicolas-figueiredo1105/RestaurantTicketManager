@@ -9,6 +9,7 @@ public class Main {
     public static Menu selectMenu(ArrayList<Menu> menus, Scanner scanner){
         if(menus.isEmpty()){
             System.out.println("No menu created yet.");
+            scanner.nextLine();
             pressContinue(scanner);
 
             return null;
@@ -60,7 +61,7 @@ public class Main {
     }
 
     public static void pressContinue(Scanner scanner){
-        System.out.println("(Press Enter To Continue) \n");
+        System.out.print("(Press Enter To Continue) \n");
         scanner.nextLine();
     }
 
@@ -119,6 +120,8 @@ public class Main {
 
                         menus.add(newMenu);
                         System.out.println("Menu successfully added.");
+
+                        pressContinue(input);
                     } else {
                         System.out.println("--- Menu ---");
                         createMenuList(menus);
@@ -168,6 +171,7 @@ public class Main {
                                 menus.add(newMenu);
 
                                 System.out.println("Menu successfully added.");
+                                pressContinue(input);
                                 break;
                             case 2:
                                 input.nextLine();
@@ -190,9 +194,11 @@ public class Main {
                                 } else {
                                     createList(categories);
                                 }
+
                                 pressContinue(input);
                                 break;
                             case 4: //CREATE NEW SIDE=================================================
+                                input.nextLine();
                                 String side;
 
                                 System.out.println("-- Create New Side --");
@@ -200,6 +206,8 @@ public class Main {
                                 side = input.nextLine();
 
                                 selectedMenu.createSide(side);
+
+                                pressContinue(input);
                                 break;
                             case 5: //VIEW SIDES=====================================================
                                 if(selectedMenu.getSides().isEmpty()){
@@ -207,6 +215,8 @@ public class Main {
                                 } else {
                                     createList(selectedMenu.getSides());
                                 }
+
+                                pressContinue(input);
                                 break;
                         }
                     }
@@ -219,6 +229,10 @@ public class Main {
 
 
                     int menuItemChoice;
+
+                    Menu selectedMenu = selectMenu(menus, input);
+
+                    if(selectedMenu == null) break;
 
                     System.out.println("--- Create a Menu Item ---");
                     System.out.println("1) Create an Item");
@@ -251,9 +265,20 @@ public class Main {
                                 description = input.nextLine();
                             }
 
-                            System.out.println("Select possible sides: ");
+                            System.out.println("Possible sides: ");
+                            createList(selectedMenu.getSides());
+                            ArrayList<String> sideChoices = new ArrayList<>();
+                            String sc;
+                            do {
+                                System.out.println("Select the sides. Press 'Enter' to finish.");
+                                sc = input.nextLine();
 
-
+                                if(sideChoices.isEmpty()) {
+                                    System.out.println("You must select at least one side.");
+                                } else {
+                                    sideChoices.add(sc);
+                                }
+                            } while(sc.isBlank() && !sideChoices.isEmpty());
 
                     }
             }

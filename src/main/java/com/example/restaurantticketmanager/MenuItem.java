@@ -1,6 +1,7 @@
 package com.example.restaurantticketmanager;
 
 public class MenuItem {
+    private Menu intendedMenu;
     private String itemName;
     private boolean isAppetizer;
     private String category;
@@ -8,7 +9,8 @@ public class MenuItem {
     private String [] possibleSides;
 
     //Constructors------------------------------------------------------------------------------
-    public MenuItem(String itemName, boolean isAppetizer, String description, String [] possibleSides){
+    public MenuItem(Menu intendedMenu,String itemName, boolean isAppetizer, String description, String [] possibleSides){
+        this.intendedMenu = intendedMenu;
         this.itemName = itemName;
         this.isAppetizer = isAppetizer;
         this.category = "";
@@ -16,7 +18,8 @@ public class MenuItem {
         this.possibleSides = possibleSides;
     }
 
-    public MenuItem(String itemName, boolean isAppetizer, String [] possibleSides){
+    public MenuItem(Menu intendedMenu, String itemName, boolean isAppetizer, String [] possibleSides){
+        this.intendedMenu = intendedMenu;
         this.itemName = itemName;
         this.isAppetizer = isAppetizer;
         this.category = "";

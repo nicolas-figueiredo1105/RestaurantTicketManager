@@ -32,7 +32,7 @@ public class Menu {
     }
 
     public void createSide(String side){
-        if(!categories.add(side)){
+        if(!sides.add(side)){
             System.out.println("Duplicated sides are not allowed.");
         } else {
             System.out.println("Side added!");
