@@ -269,14 +269,17 @@ public class Main {
                             createList(selectedMenu.getSides());
                             ArrayList<String> sideChoices = new ArrayList<>();
                             String sc;
+                            System.out.println("Select the sides. Press 'Enter' to finish.");
                             do {
-                                System.out.println("Select the sides. Press 'Enter' to finish.");
+                                int count = 1;
+                                System.out.println("Side " + count + ": ");
                                 sc = input.nextLine();
 
                                 if(sideChoices.isEmpty()) {
                                     System.out.println("You must select at least one side.");
                                 } else {
                                     sideChoices.add(sc);
+                                    count++;
                                 }
                             } while(sc.isBlank() && !sideChoices.isEmpty());
 

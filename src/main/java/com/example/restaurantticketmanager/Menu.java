@@ -8,11 +8,20 @@ public class Menu {
     private String name;
     private ArrayList<String> categories;
     private ArrayList <String> sides;
+    private ArrayList<MenuItem> menuItems;
+
+    public Menu(String name, ArrayList<MenuItem> menuItems){
+        this.name = name;
+        sides = new ArrayList<>();
+        categories = new ArrayList<>();
+        this.menuItems = menuItems;
+    }
 
     public Menu(String name){
         this.name = name;
         sides = new ArrayList<>();
         categories = new ArrayList<>();
+        this.menuItems = null;
     }
 
     //Getters
