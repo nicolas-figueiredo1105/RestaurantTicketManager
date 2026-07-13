@@ -7,38 +7,40 @@ import java.util.Scanner;
 public class Main {
 
     public static void createMenu(ArrayList<Menu> menus, Scanner scanner){
-        String menuName;
         System.out.print("Enter menu's name: ");
-        menuName = scanner.nextLine();
+        String menuName = scanner.nextLine().trim();
 
-        Menu newMenu = new Menu(menuName);
-        menus.add(newMenu);
+        if(menuName.isEmpty()){
+            System.out.println("Menu name cannot be empty.");
+            return;
+        }
+
+        menus.add(new Menu(menuName));
         System.out.println("Menu successfully created!");
     }
 
     public static Menu selectMenu(ArrayList<Menu> menus, Scanner scanner){
         if(menus.isEmpty()){
             System.out.println("No menu created yet.");
-            scanner.nextLine();
             pressContinue(scanner);
-
             return null;
-        } else {
-            int choice;
-            System.out.println("-- Select a Menu --");
-            createMenuList(menus);
-            System.out.print("Choice: ");
-            choice = scanner.nextInt();
-
-            return menus.get(choice - 1);
         }
+
+        System.out.println("-- Select a Menu --");
+        createMenuList(menus);
+        int choice = readBoundedInt(scanner, "Choice: ", 0, menus.size());
+
+        if(choice == 0){
+            return null;
+        }
+
+        return menus.get(choice - 1);
     }
 
     public static int validateIntInput(Scanner scanner){
-        int input;
-
         try {
-            input = scanner.nextInt();
+            int input = scanner.nextInt();
+            scanner.nextLine();
             return input;
         } catch (InputMismatchException ex){
             System.out.println("Invalid input. This field requires a positive integer.");
@@ -47,16 +49,7 @@ public class Main {
         }
     }
 
-    public static boolean checkEmptyInput(Scanner scanner){
-        String input;
-
-        input = scanner.nextLine();
-
-        return input.trim().isEmpty();
-    }
-
     public static boolean checkQuestionInput(Scanner scanner){
-
         while(true){
             String answer = scanner.nextLine().trim().toLowerCase();
             switch(answer){
@@ -65,274 +58,318 @@ public class Main {
                 case "n":
                     return false;
                 default:
-                    System.out.println("Invalid input. You should enter 'Y' or 'N'.");
+                    System.out.print("Invalid input. Enter 'Y' or 'N': ");
             }
         }
     }
 
     public static void pressContinue(Scanner scanner){
-        System.out.print("(Press Enter To Continue) \n");
+        System.out.print("(Press Enter To Continue)");
         scanner.nextLine();
     }
 
     public static void createList(ArrayList<String> data){
-        int count = 1;
-        for(String d : data){
-            System.out.println(count + ") " + d);
-            count++;
+        for(int i = 0; i < data.size(); i++){
+            System.out.println((i + 1) + ") " + data.get(i));
         }
+        System.out.println("0) Back");
     }
 
     public static void createMenuList(ArrayList<Menu> menus){
-        int count = 1;
-        for(Menu m : menus){
-            System.out.println(count + ") " + m.getName());
-            count++;
+        for(int i = 0; i < menus.size(); i++){
+            System.out.println((i + 1) + ") " + menus.get(i).getName());
         }
+        System.out.println("0) Back");
     }
 
-    public static int checkOutOfBoundsInput(ArrayList<Menu> menus, int inputIndex, Scanner scanner){
-        validateIntInput(scanner);
-        while(inputIndex > menus.size()){
-            System.out.println("Error. Selected number must be listed on the options.");
-            scanner.nextInt();
-            if(menus.size() == 1){
-                System.out.println("Select a menu: ");
-            } else {
-                System.out.println("Select a menu (1- " + menus.size() + "): ");
+    public static void printTitle(String subtitle){
+        System.out.println();
+        System.out.println("==== Restaurant Ticket Manager ====");
+        System.out.println(subtitle);
+    }
+
+    private static int readBoundedInt(Scanner scanner, String prompt, int min, int max){
+        int input;
+
+        do {
+            System.out.print(prompt);
+            input = validateIntInput(scanner);
+            if(input < min || input > max){
+                System.out.println("Please enter a number from " + min + " to " + max + ".");
             }
-            inputIndex = scanner.nextInt();
-        }
-        return inputIndex;
+        } while(input < min || input > max);
+
+        return input;
     }
 
-    public static void main(String [] args){
+    private static void manageMenus(ArrayList<Menu> menus, Scanner input){
+        printTitle("Menu");
+        System.out.println("1) Create a New Menu");
+        System.out.println("2) Select a Menu");
+        System.out.println("3) Delete a Menu");
+        System.out.println("0) Back");
 
-        Scanner input = new Scanner(System.in);
+        int menuOptionsChoice = readBoundedInt(input, "Choice: ", 0, 3);
 
-        ArrayList <Menu> menus = new ArrayList<>();
-        Menu selectedMenu;
+        switch (menuOptionsChoice){
+            case 1:
+                createMenu(menus, input);
+                pressContinue(input);
+                break;
+            case 2:
+                Menu selectedMenu = selectMenu(menus, input);
+                if(selectedMenu != null){
+                    manageSelectedMenu(selectedMenu, input);
+                }
+                break;
+            case 3:
+                deleteMenu(menus, input);
+                break;
+            default:
+                break;
+        }
+    }
 
+    private static void manageSelectedMenu(Menu selectedMenu, Scanner input){
         int choice;
 
         do {
+            printTitle("Selected Menu: " + selectedMenu.getName());
+            System.out.println("1) Create a Category");
+            System.out.println("2) View Categories");
+            System.out.println("3) Create New Side");
+            System.out.println("4) View Sides");
+            System.out.println("5) Create an Item");
+            System.out.println("6) View Items");
+            System.out.println("0) Back");
 
-            //STARTING MESSAGE=================================================================
-            System.out.println("==== Restaurant Ticket Manager ====");
-            System.out.println("Welcome to Restaurant Ticket Manager!");
-            System.out.println("To get started, create a menu.");
-            createMenu(menus, input);
-            selectedMenu = menus.getFirst();
+            choice = readBoundedInt(input, "Choice: ", 0, 6);
 
-            System.out.println("==== Restaurant Ticket Manager ====");
-            System.out.println("Selected menu: " + selectedMenu.getName());
-            System.out.println("1) Menu");
-            System.out.println("2) Menu Item");
-            System.out.println("3) Make an Order");
-            System.out.println("0) Exit");
-            System.out.print("Choice: ");
-
-            choice = validateIntInput(input);
-
-            switch(choice){
-                //MENU=========================================================================
+            switch (choice){
                 case 1:
-                    input.nextLine();
-
-                    int menuChoice;
-                    int menuOptionsChoice;
-                    int index = 0;
-
-
-                    if(menus.isEmpty()){
-                        String menuName;
-                        System.out.println("--- Create a Menu ---");
-                        System.out.println("No menus yet.");
-                        createMenu(menus, input);
-
-                        pressContinue(input);
-                        break;
-                    } else if(selectedMenu == null) {
-                        System.out.println("--- Menu ---");
-                        createMenuList(menus);
-
-
-                        System.out.print("Select a menu (1- " + menus.size() + "): ");
-
-                        index = checkOutOfBoundsInput(menus, index, input);
-
-                    }
-
-                    System.out.println("Selected Menu: " + selectedMenu.getName());
-                    System.out.println("1) Create a New Menu");
-                    System.out.println("2) Create a Category");
-                    System.out.println("3) View Categories");
-                    System.out.println("4) Create New Side");
-                    System.out.println("5) View Sides");
-                    System.out.println("6) Delete a Menu");
-                    System.out.println("0) Exit");
-                    System.out.print("Choice: ");
-
-                    menuOptionsChoice = validateIntInput(input);
-
-                    index--;
-                    selectedMenu = menus.get(index);
-                    ArrayList<String> categories = selectedMenu.getCategories();
-
-                    switch (menuOptionsChoice){
-                        case 1:
-                            input.nextLine();
-
-                            String menuName;
-                            System.out.println("-- Create a New Menu --");
-                            System.out.print("Enter menu's name: ");
-
-                            menuName = input.nextLine();
-                            Menu newMenu = new Menu(menuName);
-                            menus.add(newMenu);
-
-                            System.out.println("Menu successfully added.");
-                            pressContinue(input);
-                            break;
-                        case 2:
-                            input.nextLine();
-
-                            String category;
-
-                            System.out.println("-- Create a Category --");
-                            System.out.print("Category's name:");
-                            category = input.nextLine();
-                            selectedMenu.createCategory(category);
-
-                            pressContinue(input);
-                            break;
-                        case 3: //VIEW CATEGORY================================================
-                            input.nextLine();
-
-                            System.out.println("-- View Categories --");
-                            if(selectedMenu.getCategories().isEmpty()){
-                                System.out.println("No categories added yet.");
-                            } else {
-                                createList(categories);
-                            }
-
-                            pressContinue(input);
-                            break;
-                        case 4: //CREATE NEW SIDE=================================================
-                            input.nextLine();
-                            String side;
-
-                            System.out.println("-- Create New Side --");
-                            System.out.print("Insert a new side: ");
-                            side = input.nextLine();
-
-                            selectedMenu.createSide(side);
-
-                            pressContinue(input);
-                            break;
-                        case 5: //VIEW SIDES=====================================================
-                            if(selectedMenu.getSides().isEmpty()){
-                                System.out.println("No sides added yet.");
-                            } else {
-                                createList(selectedMenu.getSides());
-                            }
-
-                            pressContinue(input);
-                            break;
-                        case 6: //DELETE A MENU==================================================
-                            System.out.println("-- Delete a Menu --");
-                            if(!menus.isEmpty()){
-                                System.out.println("Select a menu to delete:");
-                                createMenuList(menus);
-                                System.out.print("Choice: ");
-                                int deleteIndex = validateIntInput(input);
-                                menus.remove(deleteIndex - 1);
-                            } else {
-                                System.out.println("No menus to delete.");
-                                pressContinue(input);
-
-                            }
-                            break;
-                    }
-
-
-
-                break;
-
-                //MENU ITEM=======================================================================
+                    createCategory(selectedMenu, input);
+                    break;
                 case 2:
-
-
-                    int menuItemChoice;
-
-                    selectedMenu = selectMenu(menus, input);
-
-                    if(selectedMenu == null) break;
-
-                    System.out.println("--- Create a Menu Item ---");
-                    System.out.println("1) Create an Item");
-                    System.out.println("2) View Items");
-                    System.out.println("0) Exit");
-                    System.out.print("Choice: ");
-
-                    menuItemChoice = validateIntInput(input);
-
-                    switch(menuItemChoice){
-                        case 1:
-                            input.nextLine();
-                            String itemName;
-                            boolean isAppetizer = false; String description; String side;
-                            String confirmation = "";
-
-                            System.out.println("-- Create an Item --");
-
-                            System.out.print("Item's name: ");
-                            itemName = input.nextLine();
-
-                            System.out.print("Is an appetizer? (Y/N): ");
-                            isAppetizer = checkQuestionInput(input);
-
-                            System.out.println("Would you like to add a description of the item? (Y/N): ");
-                            boolean addDescription = checkQuestionInput(input);
-
-                            if(addDescription){
-                                System.out.println("Enter a description: ");
-                                description = input.nextLine();
-                            }
-
-                            System.out.println("Possible sides: ");
-                            createList(selectedMenu.getSides());
-                            ArrayList<String> sideChoices = new ArrayList<>();
-                            String sc;
-                            System.out.println("Select the sides. Press 'Enter' to finish.");
-                            do {
-                                int count = 1;
-                                System.out.println("Side " + count + ": ");
-                                sc = input.nextLine();
-
-                                if(sideChoices.isEmpty()) {
-                                    System.out.println("You must select at least one side.");
-                                } else {
-                                    sideChoices.add(sc);
-                                    count++;
-                                }
-                            } while(sc.isBlank() && !sideChoices.isEmpty());
-
-                    }
+                    viewList("Categories", selectedMenu.getCategories(), input);
+                    break;
+                case 3:
+                    createSide(selectedMenu, input);
+                    break;
+                case 4:
+                    viewList("Sides", selectedMenu.getSides(), input);
+                    break;
+                case 5:
+                    createMenuItem(selectedMenu, input);
+                    break;
+                case 6:
+                    viewMenuItems(selectedMenu, input);
+                    break;
+                default:
+                    break;
             }
+        } while(choice != 0);
+    }
 
+    private static void deleteMenu(ArrayList<Menu> menus, Scanner input){
+        System.out.println("-- Delete a Menu --");
+        if(menus.isEmpty()){
+            System.out.println("No menus to delete.");
+            pressContinue(input);
+            return;
+        }
+
+        createMenuList(menus);
+        int deleteIndex = readBoundedInt(input, "Choice: ", 0, menus.size());
+        if(deleteIndex != 0){
+            Menu removed = menus.remove(deleteIndex - 1);
+            System.out.println(removed.getName() + " deleted.");
+            pressContinue(input);
+        }
+    }
+
+    private static void createCategory(Menu selectedMenu, Scanner input){
+        System.out.println("-- Create a Category --");
+        System.out.print("Category's name: ");
+        String category = input.nextLine().trim();
+
+        if(category.isEmpty()){
+            System.out.println("Category name cannot be empty.");
+        } else {
+            selectedMenu.createCategory(category);
+        }
+
+        pressContinue(input);
+    }
+
+    private static void createSide(Menu selectedMenu, Scanner input){
+        System.out.println("-- Create New Side --");
+        System.out.print("Insert a new side: ");
+        String side = input.nextLine().trim();
+
+        if(side.isEmpty()){
+            System.out.println("Side name cannot be empty.");
+        } else {
+            selectedMenu.createSide(side);
+        }
+
+        pressContinue(input);
+    }
+
+    private static void viewList(String title, ArrayList<String> data, Scanner input){
+        System.out.println("-- View " + title + " --");
+        if(data.isEmpty()){
+            System.out.println("No " + title.toLowerCase() + " added yet.");
+        } else {
+            createList(data);
+        }
+
+        pressContinue(input);
+    }
+
+    private static void createMenuItem(Menu selectedMenu, Scanner input){
+        System.out.println("-- Create an Item --");
+
+        System.out.print("Item's name: ");
+        String itemName = input.nextLine().trim();
+        if(itemName.isEmpty()){
+            System.out.println("Item name cannot be empty.");
+            pressContinue(input);
+            return;
+        }
+
+        System.out.print("Is an appetizer? (Y/N): ");
+        boolean isAppetizer = checkQuestionInput(input);
+
+        String category = "";
+        if(!selectedMenu.getCategories().isEmpty()){
+            System.out.println("Select a category:");
+            createList(selectedMenu.getCategories());
+            System.out.println("0) None");
+            int categoryChoice = readBoundedInt(input, "Choice: ", 0, selectedMenu.getCategories().size());
+            if(categoryChoice != 0){
+                category = selectedMenu.getCategories().get(categoryChoice - 1);
+            }
+        }
+
+        String description = "";
+        System.out.print("Would you like to add a description of the item? (Y/N): ");
+        if(checkQuestionInput(input)){
+            System.out.print("Enter a description: ");
+            description = input.nextLine().trim();
+        }
+
+        String[] possibleSides = selectSides(selectedMenu, input);
+        MenuItem newItem = description.isEmpty()
+                ? new MenuItem(selectedMenu, itemName, isAppetizer, possibleSides)
+                : new MenuItem(selectedMenu, itemName, isAppetizer, description, possibleSides);
+        newItem.setCategory(category);
+
+        selectedMenu.addMenuItem(newItem);
+        pressContinue(input);
+    }
+
+    private static String[] selectSides(Menu selectedMenu, Scanner input){
+        ArrayList<String> availableSides = selectedMenu.getSides();
+        ArrayList<String> selectedSides = new ArrayList<>();
+
+        if(availableSides.isEmpty()){
+            return new String[0];
+        }
+
+        int choice;
+        do {
+            System.out.println("Select possible sides for this item:");
+            createList(availableSides);
+            System.out.println("0) Done");
+            choice = readBoundedInt(input, "Choice: ", 0, availableSides.size());
+
+            if(choice != 0){
+                String side = availableSides.get(choice - 1);
+                if(selectedSides.contains(side)){
+                    System.out.println("That side is already selected.");
+                } else {
+                    selectedSides.add(side);
+                    System.out.println(side + " selected.");
+                }
+            }
         } while(choice != 0);
 
-
+        return selectedSides.toArray(new String[0]);
     }
-//    @Override
-//    public void start(Stage stage) throws IOException {
-//        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
-//        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-//        stage.setTitle("Hello!");
-//        stage.setScene(scene);
-//        stage.show();
-//    }
 
+    private static void viewMenuItems(Menu selectedMenu, Scanner input){
+        System.out.println("-- View Items --");
 
+        if(selectedMenu.getMenuItems().isEmpty()){
+            System.out.println("No items added yet.");
+        } else {
+            ArrayList<MenuItem> items = selectedMenu.getMenuItems();
+            for(int i = 0; i < items.size(); i++){
+                System.out.println((i + 1) + ") " + items.get(i));
+            }
+        }
+
+        pressContinue(input);
+    }
+
+    private static QueueNode placeAnOrder(ArrayList<Menu> menus, Scanner input){
+        if(menus.isEmpty()){
+            System.out.println("You must create a menu first.");
+            return null;
+        }
+
+        ArrayList<MenuItem> order;
+        Menu selectedMenu;
+
+        int choiceMenu;
+        int choiceCategory;
+
+        do{
+            printTitle("Place an Order");
+            //MENU
+            System.out.println("Select a Menu:");
+            createMenuList(menus);
+            choiceMenu = readBoundedInt(input, "Choice: ", 0, menus.size());
+            selectedMenu = menus.get(choiceMenu - 1);
+
+            System.out.println();
+            //CATEGORY
+            do{
+                System.out.println("Selected Menu: " +  selectedMenu);
+                System.out.println();
+                System.out.println("Select a Category:");
+                createList(selectedMenu.getCategories());
+                choiceCategory = readBoundedInt(input, "Choice: ", 0, selectedMenu.getCategories().size());
+
+            } while(choiceCategory != 0);
+        } while(choiceMenu != 0);
+    }
+
+    public static void main(String [] args){
+        Scanner input = new Scanner(System.in);
+        ArrayList<Menu> menus = new ArrayList<>();
+
+        Queue orders = new Queue();
+
+        int choice;
+        do {
+            printTitle("Welcome to Restaurant Ticket Manager!");
+            System.out.println("1) Menu");
+            System.out.println("2) Place an Order");
+            System.out.println("3) View Order(s)");
+            System.out.println("0) Exit");
+
+            choice = readBoundedInt(input, "Choice: ", 0, 3);
+
+            if(choice == 1){
+                manageMenus(menus, input);
+            }
+
+            if (choice == 2){
+                QueueNode newOrder = placeAnOrder(menus, input);
+            }
+        } while(choice != 0);
+
+        System.out.println("Goodbye!");
+    }
 }
