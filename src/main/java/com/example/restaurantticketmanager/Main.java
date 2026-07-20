@@ -3,8 +3,15 @@ package com.example.restaurantticketmanager;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.io.*;
 
 public class Main {
+
+    //FILE I/O METHODS===========================================================================
+
+
+    //===========================================================================================
+
 
     public static void createMenu(ArrayList<Menu> menus, Scanner scanner){
         System.out.print("Enter menu's name: ");
@@ -249,6 +256,20 @@ public class Main {
             if(categoryChoice != 0){
                 category = selectedMenu.getCategories().get(categoryChoice - 1);
             }
+        } else {
+            System.out.println("No categories created yet. Please create a category.");
+            System.out.print("Category name: ");
+            category = input.nextLine().trim();
+
+            while(category.isEmpty()){
+                System.out.println("Category name cannot be empty.");
+                input.nextLine();
+                category = input.nextLine().trim();
+            }
+
+            selectedMenu.createCategory(category);
+            System.out.println("Item/Category created.");
+
         }
 
         String description = "";
@@ -260,8 +281,8 @@ public class Main {
 
         String[] possibleSides = selectSides(selectedMenu, input);
         MenuItem newItem = description.isEmpty()
-                ? new MenuItem(selectedMenu, itemName, isAppetizer, possibleSides)
-                : new MenuItem(selectedMenu, itemName, isAppetizer, description, possibleSides);
+                ? new MenuItem(selectedMenu, category, itemName, isAppetizer, possibleSides)
+                : new MenuItem(selectedMenu, category, itemName, isAppetizer, description, possibleSides);
         newItem.setCategory(category);
 
         selectedMenu.addMenuItem(newItem);
@@ -312,17 +333,21 @@ public class Main {
         pressContinue(input);
     }
 
-    private static QueueNode placeAnOrder(ArrayList<Menu> menus, Scanner input){
+    private static void placeAnOrder(ArrayList<Menu> menus, Queue queue, Scanner input){
         if(menus.isEmpty()){
             System.out.println("You must create a menu first.");
-            return null;
+            return;
         }
 
-        ArrayList<MenuItem> order;
+        ArrayList<MenuItem> order = new ArrayList<>();
+
         Menu selectedMenu;
+        MenuItem selectedMenuItem;
 
         int choiceMenu;
         int choiceCategory;
+        int choiceItem;
+        int choiceSides;
 
         do{
             printTitle("Place an Order");
@@ -334,15 +359,39 @@ public class Main {
 
             System.out.println();
             //CATEGORY
+            String selectedCategory;
             do{
                 System.out.println("Selected Menu: " +  selectedMenu);
                 System.out.println();
                 System.out.println("Select a Category:");
                 createList(selectedMenu.getCategories());
                 choiceCategory = readBoundedInt(input, "Choice: ", 0, selectedMenu.getCategories().size());
+                selectedCategory = selectedMenu.getCategories().get(choiceCategory - 1);
+
+                ArrayList<MenuItem> itemsInCategory = selectedMenu.filterByCategory(selectedCategory);
+
+                for(int i = 0; i < itemsInCategory.size(); i++){
+                    System.out.println((i + 1) + ") " + itemsInCategory.get(i).getItemName());
+                }
+                System.out.println("0) Back");
+                System.out.print("Choose an Item: ");
+                choiceItem = readBoundedInt(input, "Choice: ", 0, menus.size());
+                selectedMenuItem = itemsInCategory.get(choiceItem - 1);
 
             } while(choiceCategory != 0);
+
+
+
+            order.add(selectedMenuItem);
         } while(choiceMenu != 0);
+
+        Ticket newTicket = new Ticket(order);
+        queue.addTicket(newTicket);
+    }
+
+    public static void viewOrders(Scanner input, Queue orders){
+        System.out.println("-- View Orders --");
+        System.out.println(orders.toString());
     }
 
     public static void main(String [] args){
@@ -366,8 +415,14 @@ public class Main {
             }
 
             if (choice == 2){
-                QueueNode newOrder = placeAnOrder(menus, input);
+                placeAnOrder(menus, orders, input);
+                System.out.println("Order placed successfully!");
             }
+
+            if (choice == 3){
+                viewOrders(input, orders);
+            }
+
         } while(choice != 0);
 
         System.out.println("Goodbye!");

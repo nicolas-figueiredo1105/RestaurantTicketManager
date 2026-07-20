@@ -56,6 +56,16 @@ public class Menu {
         System.out.println("Item added!");
     }
 
+    public ArrayList<MenuItem> filterByCategory(String category){
+        ArrayList<MenuItem> filteredItems = new ArrayList<>();
+        for(MenuItem item : menuItems){
+            if(item.getCategory().equals(category)){
+                filteredItems.add(item);
+            }
+        }
+        return filteredItems;
+    }
+
     public void resetMenu(Scanner input){
         String confirmation;
 

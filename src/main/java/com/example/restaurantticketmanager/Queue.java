@@ -30,12 +30,13 @@ public class Queue {
         queueSize--;
     }
 
-    public void addTicket(QueueNode newTicket){
+    public void addTicket(Ticket newTicket){
+        QueueNode newNode = new QueueNode(newTicket, null);
         if(isEmpty()){
-            start = end = newTicket;
+            start = end = newNode;
         } else {
-            end.setNext(newTicket);
-            end = newTicket;
+            end.setNext(newNode);
+            end = newNode;
         }
 
         queueSize++;
@@ -43,5 +44,16 @@ public class Queue {
 
     public int getSize(){
         return queueSize;
+    }
+
+    @Override
+    public String toString(){
+        String str = "";
+        QueueNode current = start;
+        while(current.getNext() != null){
+            str += current.getTicket().toString() + "\n";
+            current = current.getNext();
+        }
+        return str;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.restaurantticketmanager;
 
+import java.util.ArrayList;
+
 public class MenuItem {
     private Menu intendedMenu;
     private String itemName;
@@ -9,8 +11,9 @@ public class MenuItem {
     private String [] possibleSides;
 
     //Constructors------------------------------------------------------------------------------
-    public MenuItem(Menu intendedMenu,String itemName, boolean isAppetizer, String description, String [] possibleSides){
+    public MenuItem(Menu intendedMenu,String category, String itemName, boolean isAppetizer, String description, String [] possibleSides){
         this.intendedMenu = intendedMenu;
+        this.category = category;
         this.itemName = itemName;
         this.isAppetizer = isAppetizer;
         this.category = "";
@@ -18,8 +21,9 @@ public class MenuItem {
         this.possibleSides = possibleSides;
     }
 
-    public MenuItem(Menu intendedMenu, String itemName, boolean isAppetizer, String [] possibleSides){
+    public MenuItem(Menu intendedMenu, String category, String itemName, boolean isAppetizer, String [] possibleSides){
         this.intendedMenu = intendedMenu;
+        this.category = category;
         this.itemName = itemName;
         this.isAppetizer = isAppetizer;
         this.category = "";
@@ -54,6 +58,7 @@ public class MenuItem {
     }
 
     public void setCategory(String newCategory){ category = newCategory; }
+
 
     @Override
     public String toString(){
