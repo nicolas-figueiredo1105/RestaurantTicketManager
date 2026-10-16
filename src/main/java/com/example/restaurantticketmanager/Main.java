@@ -3,15 +3,11 @@ package com.example.restaurantticketmanager;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.io.*;
+
+import java.sql.SQLException;
+
 
 public class Main {
-
-    //FILE I/O METHODS===========================================================================
-
-
-    //===========================================================================================
-
 
     public static void createMenu(ArrayList<Menu> menus, Scanner scanner){
         System.out.print("Enter menu's name: ");
@@ -75,7 +71,7 @@ public class Main {
         scanner.nextLine();
     }
 
-    public static void createList(ArrayList<String> data){
+    public static void createStringList(ArrayList<String> data){
         for(int i = 0; i < data.size(); i++){
             System.out.println((i + 1) + ") " + data.get(i));
         }
@@ -227,7 +223,7 @@ public class Main {
         if(data.isEmpty()){
             System.out.println("No " + title.toLowerCase() + " added yet.");
         } else {
-            createList(data);
+            createStringList(data);
         }
 
         pressContinue(input);
@@ -250,7 +246,7 @@ public class Main {
         String category = "";
         if(!selectedMenu.getCategories().isEmpty()){
             System.out.println("Select a category:");
-            createList(selectedMenu.getCategories());
+            createStringList(selectedMenu.getCategories());
             System.out.println("0) None");
             int categoryChoice = readBoundedInt(input, "Choice: ", 0, selectedMenu.getCategories().size());
             if(categoryChoice != 0){
@@ -300,7 +296,7 @@ public class Main {
         int choice;
         do {
             System.out.println("Select possible sides for this item:");
-            createList(availableSides);
+            createStringList(availableSides);
             System.out.println("0) Done");
             choice = readBoundedInt(input, "Choice: ", 0, availableSides.size());
 
@@ -364,7 +360,7 @@ public class Main {
                 System.out.println("Selected Menu: " +  selectedMenu);
                 System.out.println();
                 System.out.println("Select a Category:");
-                createList(selectedMenu.getCategories());
+                createStringList(selectedMenu.getCategories());
                 choiceCategory = readBoundedInt(input, "Choice: ", 0, selectedMenu.getCategories().size());
                 selectedCategory = selectedMenu.getCategories().get(choiceCategory - 1);
 
@@ -395,6 +391,14 @@ public class Main {
     }
 
     public static void main(String [] args){
+        try {
+            Database.initialize();
+            System.out.println("Database initialized.");
+        } catch (SQLException e) {
+            System.err.println("Could not initialize database: " + e.getMessage());
+            return;
+        }
+
         Scanner input = new Scanner(System.in);
         ArrayList<Menu> menus = new ArrayList<>();
 
@@ -416,7 +420,6 @@ public class Main {
 
             if (choice == 2){
                 placeAnOrder(menus, orders, input);
-                System.out.println("Order placed successfully!");
             }
 
             if (choice == 3){
