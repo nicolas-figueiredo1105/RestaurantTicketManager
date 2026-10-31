@@ -4,10 +4,27 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.sql.SQLException;
 
 
-public class Main {
+public class Main extends Application {
+
+    //JavaFX initialization ===================================================================
+    @Override
+    public void start(Stage stage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
+        Scene scene = new Scene(loader.load());
+
+        stage.setScene(scene);
+        stage.setTitle("Home");
+        stage.show();
+    }
+    //========================================================================================
 
     public static void createMenu(ArrayList<Menu> menus, Scanner scanner){
         System.out.print("Enter menu's name: ");
@@ -390,7 +407,11 @@ public class Main {
         System.out.println(orders.toString());
     }
 
+
     public static void main(String [] args){
+
+        launch();
+
         try {
             Database.initialize();
             System.out.println("Database initialized.");
