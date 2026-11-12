@@ -48,9 +48,13 @@ public class Queue {
 
     @Override
     public String toString(){
+        if(isEmpty()){
+            return "Queue is empty";
+        }
+
         String str = "";
         QueueNode current = start;
-        while(current.getNext() != null){
+        while(current != null){
             str += current.getTicket().toString() + "\n";
             current = current.getNext();
         }

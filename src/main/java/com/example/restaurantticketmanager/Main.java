@@ -14,17 +14,7 @@ import java.sql.SQLException;
 
 public class Main extends Application {
 
-    //JavaFX initialization ===================================================================
-    @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
-        Scene scene = new Scene(loader.load());
 
-        stage.setScene(scene);
-        stage.setTitle("Home");
-        stage.show();
-    }
-    //========================================================================================
 
     public static void createMenu(ArrayList<Menu> menus, Scanner scanner){
         System.out.print("Enter menu's name: ");
@@ -368,38 +358,55 @@ public class Main extends Application {
             System.out.println("Select a Menu:");
             createMenuList(menus);
             choiceMenu = readBoundedInt(input, "Choice: ", 0, menus.size());
-            selectedMenu = menus.get(choiceMenu - 1);
 
-            System.out.println();
-            //CATEGORY
-            String selectedCategory;
-            do{
-                System.out.println("Selected Menu: " +  selectedMenu);
+            if(choiceMenu != 0){
+                selectedMenu = menus.get(choiceMenu - 1);
+
                 System.out.println();
-                System.out.println("Select a Category:");
-                createStringList(selectedMenu.getCategories());
-                choiceCategory = readBoundedInt(input, "Choice: ", 0, selectedMenu.getCategories().size());
-                selectedCategory = selectedMenu.getCategories().get(choiceCategory - 1);
+                //CATEGORY
+                String selectedCategory;
+                do{
+                    System.out.println("Selected Menu: " +  selectedMenu);
+                    System.out.println();
+                    System.out.println("Select a Category:");
+                    createStringList(selectedMenu.getCategories());
+                    choiceCategory = readBoundedInt(input, "Choice: ", 0, selectedMenu.getCategories().size());
 
-                ArrayList<MenuItem> itemsInCategory = selectedMenu.filterByCategory(selectedCategory);
+                    if(choiceCategory != 0){
+                        selectedCategory = selectedMenu.getCategories().get(choiceCategory - 1);
 
-                for(int i = 0; i < itemsInCategory.size(); i++){
-                    System.out.println((i + 1) + ") " + itemsInCategory.get(i).getItemName());
-                }
-                System.out.println("0) Back");
-                System.out.print("Choose an Item: ");
-                choiceItem = readBoundedInt(input, "Choice: ", 0, menus.size());
-                selectedMenuItem = itemsInCategory.get(choiceItem - 1);
+                        //ITEM
+                        ArrayList<MenuItem> itemsInCategory = selectedMenu.filterByCategory(selectedCategory);
 
-            } while(choiceCategory != 0);
+                        if(itemsInCategory.isEmpty()){
+                            System.out.println("No items in this category.");
+                        } else {
+                            for(int i = 0; i < itemsInCategory.size(); i++){
+                                System.out.println((i + 1) + ") " + itemsInCategory.get(i).getItemName());
+                            }
+                            System.out.println("0) Back");
+                            choiceItem = readBoundedInt(input, "Choose an Item: ", 0, itemsInCategory.size());
 
-
-
-            order.add(selectedMenuItem);
+                            if(choiceItem != 0){
+                                selectedMenuItem = itemsInCategory.get(choiceItem - 1);
+                                order.add(selectedMenuItem);
+                                System.out.println(selectedMenuItem.getItemName() + " added to the order.");
+                            }
+                        }
+                        System.out.println();
+                    }
+                } while(choiceCategory != 0);
+            }
         } while(choiceMenu != 0);
+
+        if(order.isEmpty()){
+            System.out.println("No items selected. Order cancelled.");
+            return;
+        }
 
         Ticket newTicket = new Ticket(order);
         queue.addTicket(newTicket);
+        System.out.println("Order placed!");
     }
 
     public static void viewOrders(Scanner input, Queue orders){
@@ -451,4 +458,16 @@ public class Main extends Application {
 
         System.out.println("Goodbye!");
     }
+
+    //JavaFX initialization ===================================================================
+    @Override
+    public void start(Stage stage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
+        Scene scene = new Scene(loader.load());
+
+        stage.setScene(scene);
+        stage.setTitle("Home");
+        stage.show();
+    }
+    //========================================================================================
 }
